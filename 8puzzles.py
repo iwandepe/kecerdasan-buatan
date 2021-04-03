@@ -1,8 +1,6 @@
 # Kode Program untuk menyelesaikan 8 Puzzle problem
 # dengan menggunakan algoritma A*
 
-# Dibuat oleh: Iwan Dwi Prakoso
-
 class State:
     '''
     Class yang merepresentasikan suatu state
