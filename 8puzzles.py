@@ -74,6 +74,7 @@ class State:
 
     def print_state(self):
         print("Cost:", self.cost)
+        print("Heur:", self.heur)
         for row in self.data:
             for col in row:
                 print(col, end=" ")
@@ -107,12 +108,12 @@ class Puzzle:
                      [4, 5, 6],
                      [7, 8, 0]]
 
-        # Inisialisasi start state dan goal state
-        self.start = State(start_data, 0, 0)
-        self.goal = State(goal_data, -1, 0)
-
         # Menghitung heuristik function dari state awal
-        self.start.heur = self.h(self.start.data, self.goal.data)
+        start_heur = self.h(start_data, goal_data)
+
+        # Inisialisasi start state dan goal state
+        self.start = State(start_data, 0, start_heur)
+        self.goal = State(goal_data, 0, 0)
 
         # Inisialisasi open and closed dengan nilai kosong
         self.open = []
@@ -123,6 +124,7 @@ class Puzzle:
 
     def h(self, start, goal):
         # Fungsi untuk menghitung estimasi jarak dari state saat ini ke state tujuan
+        # Fungsi ini menghitung jumlah angka yang salah penempatan
 
         heur = 0
         for i in range(3):
@@ -131,20 +133,33 @@ class Puzzle:
                     heur += 1
         return heur
 
-    def process(self):
+    def is_checked(self, state):
+        for open_state in self.open:
+            if open_state.data == state:
+                return False
+        for closed_state in self.closed:
+            if closed_state.data == state:
+                return False
+
+        return True
+
+    def a_search(self):
         # Fugnsi untuk melakukan pencarian dari state awal sampai ke state tujuan
 
         self.open.append(self.start)
+        iteration_count = 1
 
         while True:
             cur_state = self.open[0]
+            # cur_state.print_state()
 
             # Mencari perubahan state yang mungkin lalu
             # dimasukkan ke open state
             children = cur_state.generate_child()
             for child in children:
                 child.heur = self.h(child.data, self.goal.data)
-                self.open.append(child)
+                if self.is_checked(child.data):
+                    self.open.append(child)
 
             # Menghapus state yang baru saja di-eksplor dari open state
             # dan memasukkan ke closed state
@@ -158,18 +173,65 @@ class Puzzle:
             # Jika heuristik function sama dengan 0
             # maka solusi sudah ditemukan dan keluar loop
             if cur_state.heur == 0:
-                print("YAY KETEMU")
+                print("GOAL STATE FOUND:")
+                print("Lots of iteration:", iteration_count)
+                print("Open state", len(self.open))
+                print("Closed state", len(self.closed))
                 cur_state.print_state()
                 break
 
             # Melanjutkan loop dengan state baru yang memiliki nilai
             # heuristik function paling kecil
+            iteration_count += 1
+
+    def greedy_search(self):
+        # Fugnsi untuk melakukan pencarian dari state awal sampai ke state tujuan
+
+        self.open.append(self.start)
+        iteration_count = 1
+
+        while True:
             cur_state = self.open[0]
+            # cur_state.print_state()
+
+            # Mencari perubahan state yang mungkin lalu
+            # dimasukkan ke open state
+            children = cur_state.generate_child()
+            for child in children:
+                child.heur = self.h(child.data, self.goal.data)
+                if self.is_checked(child.data):
+                    self.open.append(child)
+
+            # Menghapus state yang baru saja di-eksplor dari open state
+            # dan memasukkan ke closed state
+            self.closed.append(cur_state)
+            del self.open[0]
+
+            # Mengurutkan state yang masih belum selesai dieksplorasi
+            # urut sesuai dari hasil fungsi f yang paling kecil
+            self.open.sort(key=lambda state: state.heur, reverse=False)
+
+            # Jika heuristik function sama dengan 0
+            # maka solusi sudah ditemukan dan keluar loop
+            if cur_state.heur == 0:
+                print("Goal state found")
+                print("Lots of iteration:", iteration_count)
+                print("Open state", len(self.open))
+                print("Closed state", len(self.closed))
+                cur_state.print_state()
+                break
+
+            # Melanjutkan loop dengan state baru yang memiliki nilai
+            # heuristik function paling kecil
+            iteration_count += 1
 
 
 def main():
-    puzzle = Puzzle()
-    puzzle.process()
+    puzzleA = Puzzle()
+    puzzleA.a_search()
+
+    puzzleB = Puzzle()
+    puzzleB.greedy_search()
 
 
 if __name__ == '__main__':
