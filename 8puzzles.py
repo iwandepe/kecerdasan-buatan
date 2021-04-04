@@ -1,5 +1,6 @@
 # Kode Program untuk menyelesaikan 8 Puzzle problem
-# dengan menggunakan algoritma A*
+# dengan menggunakan algoritma A* dan Greedy Best First Search
+
 import time
 
 
@@ -103,9 +104,16 @@ class Puzzle:
     def __init__(self):
 
         # Inisialisasi data dari start state dan gaol state
-        start_data = [[2, 0, 6],
-                      [1, 3, 5],
-                      [4, 7, 8]]
+
+        # Kasus pertama
+        # start_data = [[2, 0, 6],
+        #               [1, 3, 5],
+        #               [4, 7, 8]]
+
+        # Kasus kedua
+        start_data = [[1, 3, 6],
+                      [2, 4, 8],
+                      [0, 5, 7]]
         goal_data = [[1, 2, 3],
                      [4, 5, 6],
                      [7, 8, 0]]
@@ -140,15 +148,15 @@ class Puzzle:
 
         for open_state in self.open:
             if open_state.data == state:
-                return False
+                return True
         for closed_state in self.closed:
             if closed_state.data == state:
-                return False
+                return True
 
-        return True
+        return False
 
     def a_search(self):
-        # Fugnsi untuk melakukan pencarian dari state awal sampai ke state tujuan
+        # Fugnsi untuk melakukan pencarian dari state awal sampai ke state tujuan dengan algoritma A*
 
         begin = time.time()
         self.open.append(self.start)
@@ -156,14 +164,13 @@ class Puzzle:
 
         while True:
             cur_state = self.open[0]
-            # cur_state.print_state()
 
             # Mencari perubahan state yang mungkin lalu
             # dimasukkan ke open state
             children = cur_state.generate_child()
             for child in children:
                 child.heur = self.oop(child.data, self.goal.data)
-                if self.is_checked(child.data):
+                if not self.is_checked(child.data):
                     self.open.append(child)
 
             # Menghapus state yang baru saja di-eksplor dari open state
@@ -199,14 +206,13 @@ class Puzzle:
 
         while True:
             cur_state = self.open[0]
-            # cur_state.print_state()
 
             # Mencari perubahan state yang mungkin lalu
             # dimasukkan ke open state
             children = cur_state.generate_child()
             for child in children:
                 child.heur = self.oop(child.data, self.goal.data)
-                if self.is_checked(child.data):
+                if not self.is_checked(child.data):
                     self.open.append(child)
 
             # Menghapus state yang baru saja di-eksplor dari open state
@@ -215,7 +221,7 @@ class Puzzle:
             del self.open[0]
 
             # Mengurutkan state yang masih belum selesai dieksplorasi
-            # urut sesuai dari hasil fungsi f yang paling kecil
+            # urut sesuai dari hasil fungsi heuristik yang paling kecil
             self.open.sort(key=lambda state: state.heur, reverse=False)
 
             # Jika heuristik function sama dengan 0
