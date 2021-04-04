@@ -1,5 +1,6 @@
 # Kode Program untuk menyelesaikan 8 Puzzle problem
 # dengan menggunakan algoritma A*
+import time
 
 class State:
     '''
@@ -109,10 +110,11 @@ class Puzzle:
                      [7, 8, 0]]
 
         # Menghitung heuristik function dari state awal
-        start_heur = self.h(start_data, goal_data)
+        # startHeur = self.oop(start_data, goal_data)
+        startHeur = self.manh(start_data, goal_data) 
 
         # Inisialisasi start state dan goal state
-        self.start = State(start_data, 0, start_heur)
+        self.start = State(start_data, 0, startHeur)
         self.goal = State(goal_data, 0, 0)
 
         # Inisialisasi open and closed dengan nilai kosong
@@ -122,7 +124,7 @@ class Puzzle:
     def f(self, state):
         return state.cost + state.heur
 
-    def h(self, start, goal):
+    def oop(self, start, goal):
         # Fungsi untuk menghitung estimasi jarak dari state saat ini ke state tujuan
         # Fungsi ini menghitung jumlah angka yang salah penempatan
 
@@ -131,6 +133,21 @@ class Puzzle:
             for j in range(3):
                 if (start[i][j] != goal[i][j] and start[i][j] != 0):
                     heur += 1
+        return heur
+
+    def manh(self, start, goal):
+        # print ("using manhattan")
+        heur =0
+        for v in range(9):
+            for i in range(3):
+                for j in range(3):
+                    if (start[i][j] == v):
+                        startx = i
+                        starty = j
+                    if (goal[i][j] == v):
+                        goalx = i
+                        goaly = j
+            heur += (abs(startx-goalx) + abs(starty-goaly))
         return heur
 
     def is_checked(self, state):
@@ -145,7 +162,7 @@ class Puzzle:
 
     def a_search(self):
         # Fugnsi untuk melakukan pencarian dari state awal sampai ke state tujuan
-
+        begin = time.time()
         self.open.append(self.start)
         iteration_count = 1
 
@@ -157,7 +174,8 @@ class Puzzle:
             # dimasukkan ke open state
             children = cur_state.generate_child()
             for child in children:
-                child.heur = self.h(child.data, self.goal.data)
+                # child.heur = self.oop(child.data, self.goal.data)       # oop
+                child.heur = self.manh(child.data, self.goal.data)      # manhattan
                 if self.is_checked(child.data):
                     self.open.append(child)
 
@@ -183,10 +201,12 @@ class Puzzle:
             # Melanjutkan loop dengan state baru yang memiliki nilai
             # heuristik function paling kecil
             iteration_count += 1
+        
+        print("--- %s seconds ---\n" % (time.time() - begin))
 
     def greedy_search(self):
         # Fugnsi untuk melakukan pencarian dari state awal sampai ke state tujuan
-
+        begin = time.time()
         self.open.append(self.start)
         iteration_count = 1
 
@@ -198,7 +218,8 @@ class Puzzle:
             # dimasukkan ke open state
             children = cur_state.generate_child()
             for child in children:
-                child.heur = self.h(child.data, self.goal.data)
+                # child.heur = self.oop(child.data, self.goal.data)     # oop
+                child.heur = self.manh(child.data, self.goal.data)  # manhattan
                 if self.is_checked(child.data):
                     self.open.append(child)
 
@@ -224,9 +245,12 @@ class Puzzle:
             # Melanjutkan loop dengan state baru yang memiliki nilai
             # heuristik function paling kecil
             iteration_count += 1
+        
+        print("--- %s seconds ---\n" % (time.time() - begin))
 
 
 def main():
+
     puzzleA = Puzzle()
     puzzleA.a_search()
 
