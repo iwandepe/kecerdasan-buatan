@@ -106,14 +106,14 @@ class Puzzle:
         # Inisialisasi data dari start state dan gaol state
 
         # Kasus pertama
-        # start_data = [[2, 0, 6],
-        #               [1, 3, 5],
-        #               [4, 7, 8]]
+        start_data = [[1, 4, 3],
+                      [5, 2, 6],
+                      [7, 8, 0]]
 
         # Kasus kedua
-        start_data = [[1, 3, 6],
-                      [2, 4, 8],
-                      [0, 5, 7]]
+        # start_data = [[1, 3, 6],
+        #               [2, 4, 8],
+        #               [0, 5, 7]]
         goal_data = [[1, 2, 3],
                      [4, 5, 6],
                      [7, 8, 0]]
