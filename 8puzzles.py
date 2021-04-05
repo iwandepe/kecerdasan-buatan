@@ -106,17 +106,24 @@ class Puzzle:
         # Inisialisasi data dari start state dan gaol state
 
         # Kasus pertama
-        start_data = [[1, 4, 3],
-                      [5, 2, 6],
-                      [7, 8, 0]]
+        # start_data = [[1, 4, 3],
+        #               [5, 2, 6],
+        #               [7, 8, 0]]
 
         # Kasus kedua
         # start_data = [[1, 3, 6],
         #               [2, 4, 8],
         #               [0, 5, 7]]
+        # goal_data = [[1, 2, 3],
+        #              [4, 5, 6],
+        #              [7, 8, 0]]
+
+        start_data = [[2, 8, 3],
+                      [1, 6, 4],
+                      [7, 0, 5]]
         goal_data = [[1, 2, 3],
-                     [4, 5, 6],
-                     [7, 8, 0]]
+                     [8, 0, 4],
+                     [7, 6, 5]]
 
         # Menghitung heuristik function dari state awal
         startHeur = self.oop(start_data, goal_data)
@@ -185,6 +192,7 @@ class Puzzle:
             # Jika heuristik function sama dengan 0
             # maka solusi sudah ditemukan dan keluar loop
             if cur_state.heur == 0:
+                print("A*")
                 print("GOAL STATE FOUND:")
                 print("Lots of iteration:", iteration_count)
                 print("Open state", len(self.open))
@@ -227,6 +235,7 @@ class Puzzle:
             # Jika heuristik function sama dengan 0
             # maka solusi sudah ditemukan dan keluar loop
             if cur_state.heur == 0:
+                print("Greedy Best First Search")
                 print("Goal state found")
                 print("Lots of iteration:", iteration_count)
                 print("Open state", len(self.open))
