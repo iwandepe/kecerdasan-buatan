@@ -149,9 +149,11 @@ def main():
     time = []
     back_track = []
 
-    inf = no_inference
+    # inf = no_inference
+    inf = forward_checking
+    # inf = mac
 
-    which = 3
+    which = 1
 
     s1 = SudokuGame()
     s1.set_board(which)

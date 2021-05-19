@@ -73,28 +73,6 @@ class CSP():
                     not self.constraints(var, val, var2, assignment[var2]))
         return count(conflict(v) for v in self.neighbors[var])
 
-    def display(self, assignment):
-        """Show a human-readable representation of the CSP."""
-        # Subclasses can print in a prettier way, or display with a GUI
-        print('CSP:', self, 'with assignment:', assignment)
-
-    # These methods are for the tree and graph-search interface:
-
-    def actions(self, state):
-        """Return a list of applicable actions: nonconflicting
-        assignments to an unassigned variable."""
-        if len(state) == len(self.variables):
-            return []
-        else:
-            assignment = dict(state)
-            var = first([v for v in self.variables if v not in assignment])
-            return [(var, val) for val in self.domains[var]
-                    if self.nconflicts(var, val, assignment) == 0]
-
-    def result(self, state, action):
-        """Perform an action and return the new state."""
-        (var, val) = action
-        return state + ((var, val),)
 
     def goal_test(self, state):
         """The goal is to assign all variables, with all constraints satisfied."""
@@ -215,7 +193,6 @@ def lcv(var, assignment, csp):
 def no_inference(csp, var, value, assignment, removals):
     return True
 
-
 def forward_checking(csp, var, value, assignment, removals):
     """Prune neighbor values inconsistent with var=value."""
     for B in csp.neighbors[var]:
@@ -233,7 +210,6 @@ def mac(csp, var, value, assignment, removals):
     return AC3(csp, [(X, var) for X in csp.neighbors[var]], removals)
 
 # The search, proper
-
 
 def backtracking_search(csp,
                         select_unassigned_variable=first_unassigned_variable,
